@@ -54,4 +54,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+let PORT = process.env.PORT||3000;
+app.listen( PORT,()=>{
+  console.log("App Started "+PORT);
+});
 module.exports = app;
