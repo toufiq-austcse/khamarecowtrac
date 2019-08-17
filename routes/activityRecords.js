@@ -6,87 +6,61 @@ const timeUtils = require('../utils/time');
 
 const STARTTIMEINSECOND= new Date().getTime()/1000;
 router.post("/cowtrac/postactivity",async (req,res)=>{
-    const currentDate = new Date();
-    const currentTimeInSeconds = timeUtils.convertTimeToSeconds(currentDate.getHours(),currentDate.getMinutes(),currentDate.getSeconds());
-    console.log(currentTimeInSeconds);
-    try{
-        let activityRecord = await ActivityRecords.find({}).sort({_id: -1}).limit(1);
-
-        if(activityRecord.length === 1){
-            let createdDate = new Date(activityRecord[0].createdAt);
-            let createdTimeInSeconds = timeUtils.convertTimeToSeconds(createdDate.getHours(),createdDate.getMinutes(),createdDate.getSeconds());
-            let timeInSecondsDiff =currentTimeInSeconds-createdTimeInSeconds;
-
-            if( timeInSecondsDiff< 3600){
-                let allCurrentRecords = activityRecord[0].records;
-                let updateIndex = allCurrentRecords.indexOf(timeInSecondsDiff);
-
-                if(updateIndex === -1){
-                    allCurrentRecords.push({
-                        second:timeInSecondsDiff,
-                        data:{
-                            cattle_id:req.query.cattle_id,
-                            x_value:req.query.x_value,
-                            y_value:req.query.y_value,
-                            z_value:req.query.z_value,
-                            temp_value:req.query.temp_value
-                        }
-                    })
-                }
-                else{
-                    allCurrentRecords[updateIndex].data = allCurrentRecords[updateIndex].data.concat({
-                        cattle_id:req.query.cattle_id,
-                        x_value:req.query.x_value,
-                        y_value:req.query.y_value,
-                        z_value:req.query.z_value,
-                        temp_value:req.query.temp_value
-                    });
-                }
 
 
-                await activityRecord[0].save();
-                res.status(200).json({message:"updated"});
-            }else{
-                let aNewActivityRecord = new ActivityRecords({
-                    records: [{
-                        second:0,
-                        data:[{
-                            cattle_id:req.query.cattle_id,
-                            x_value:req.query.x_value,
-                            y_value:req.query.y_value,
-                            z_value:req.query.z_value,
-                            temp_value:req.query.temp_value
-                        }]
-                    }]
-                });
+    const filter = {
+        // 'records.data.cattle_id':{
+        //     $eq:"1"
+        // }
+        createdAt:{$gt:new Date(Date.now() - 1*60*60 * 1000)},
+        'records.time':{
+            $eq:new Date('2019-08-17T20:18:27.456+00:00')
+        },
 
-                await aNewActivityRecord.save();
-                res.status(201).json({message:"Created 1"});
+
+
+    };
+
+
+    const update = {
+        $push:{
+            'records.0.time':Date.now(),
+        },
+        $push:{
+            'records.data':{
+                cattle_id:req.query.cattle_id,
+                x_value: req.query.x_value,
+                y_value:req.query.y_value,
+                z_value: req.query.z_value,
+                temp_value:req.query.temp_value
             }
 
-        }else{
-            let aNewActivityRecord = new ActivityRecords({
-                records: [{
-                    second:0,
-                    data:[{
-                        cattle_id:req.query.cattle_id,
-                        x_value:req.query.x_value,
-                        y_value:req.query.y_value,
-                        z_value:req.query.z_value,
-                        temp_value:req.query.temp_value
-                    }]
-                }]
-            });
 
-            await aNewActivityRecord.save();
-            res.status(201).json({message:"Created 2"});
+            // rec
+            // records:{
+            //     time: new Date() ,
+            //     data:[{
+            //         cattle_id:req.query.cattle_id,
+            //         x_value: req.query.x_value,
+            //         y_value:req.query.y_value,
+            //         z_value: req.query.z_value,
+            //         temp_value:req.query.temp_value
+            //     }]
+            // }
         }
+
+    };
+
+    try {
+        let doc = await ActivityRecords.findOneAndUpdate(filter,update,{
+            new: true,
+            upsert: true // Make this update into an upsert
+        });
+        res.status(201).json(doc);
     }catch (e) {
         console.log(e);
-        res.status(500).send(e.message);
+        return res.status(500).send(e.message);
     }
-
-
 
 });
 

@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 let activityRecordsSchema = new mongoose.Schema({
+
    records:[{
-       second:{
-           type:String
+       time:{
+           type:Date
        },
        data:[
            {

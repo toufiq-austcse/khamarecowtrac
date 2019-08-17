@@ -8,8 +8,16 @@ let dbConnection = require('./database/connection');
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let activityRecordsRouter = require('./routes/activityRecords');
+const timeUtils = require('./utils/time');
 
 let app = express();
+
+
+const currentDate = new Date();
+
+
+process.env.STARTINGTIME = currentDate;
+
 //For handling CORS Error
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
