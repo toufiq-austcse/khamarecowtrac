@@ -18,7 +18,7 @@ router.post("/cowtrac/postactivity",async (req,res)=>{
 
 });
 router.get("/cowtrac/postactivity/:cattleid",async (req,res)=>{
-    console.log(req.params.cattleid);
+    // console.log(req.params.cattleid);
         try {
             // let records = await ActivityRecords.find({
             //     'records.data.cattle_id' : {
