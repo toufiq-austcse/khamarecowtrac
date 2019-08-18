@@ -2,31 +2,21 @@ const mongoose = require('mongoose');
 
 let activityRecordsSchema = new mongoose.Schema({
 
-   records:[{
-       time:{
-           type:Date
-       },
-       data:[
-           {
-               cattle_id:{
-                   type: String
-               },
-               x_value:{
-                   type:String
-               },
-               y_value:{
-                   type:String
-               },
-               z_value:{
-                   type:String
-               },
-               temp_value:{
-                   type:String
-               }
-           }
-       ]
-
-   }]
+    cattle_id:{
+        type: String
+    },
+    x_value:{
+        type:String
+    },
+    y_value:{
+        type:String
+    },
+    z_value:{
+        type:String
+    },
+    temp_value:{
+        type:String
+    }
 },{
     timestamps: true
 });
