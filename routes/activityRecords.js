@@ -7,7 +7,7 @@ const timeUtils = require('../utils/time');
 let queue = [];
 router.post("/cowtrac/postactivity",async (req,res)=>{
    try {
-       let activityDoc = new ActivityRecords({...req.query});
+       let activityDoc = new ActivityRecords({...req.body});
        await activityDoc.save();
        res.status(200).json({message:"inserted"})
    }catch (e) {
