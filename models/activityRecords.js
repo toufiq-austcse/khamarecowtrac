@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 let activityRecordsSchema = new mongoose.Schema({
 
-    cattle_id:{
+    coller_id:{
         type: String
     },
     x_value:{

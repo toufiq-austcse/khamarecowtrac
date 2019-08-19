@@ -28,7 +28,7 @@ router.get("/cowtrac/getactivity/:cattleid",async (req,res)=>{
             // });
             // res.status(200).json(records);
 
-            let records = await ActivityRecords.find({cattle_id:req.params.cattleid});
+            let records = await ActivityRecords.find({coller_id:req.params.cattleid});
             res.status(200).json(records);
         }catch (e) {
             console.log(e);
